@@ -24,4 +24,9 @@ resource "azurerm_linux_virtual_machine" "vm" {
     sku       = "server"
     version   = "latest"
   }
+
+  tags = {
+    environment = "CP2"
+  }
+
 }

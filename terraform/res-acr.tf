@@ -8,4 +8,8 @@ resource "azurerm_container_registry" "acr" {
 
   public_network_access_enabled = true
 
+  tags = {
+    environment = "CP2"
+  }
+
 }

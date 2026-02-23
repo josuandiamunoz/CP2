@@ -3,6 +3,11 @@ resource "azurerm_virtual_network" "vnet" {
   address_space       = ["10.0.0.0/16"]
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
+
+  tags = {
+    environment = "CP2"
+  }
+
 }
 
 resource "azurerm_subnet" "subnet" {
@@ -18,6 +23,11 @@ resource "azurerm_public_ip" "public_ip" {
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Dynamic"
   sku                 = "Basic"
+
+  tags = {
+    environment = "CP2"
+  }
+
 }
 
 resource "azurerm_network_interface" "nic" {
@@ -32,4 +42,9 @@ resource "azurerm_network_interface" "nic" {
     private_ip_address            = "10.0.1.10"
     public_ip_address_id          = azurerm_public_ip.public_ip.id
   }
+
+  tags = {
+    environment = "CP2"
+  }
+
 }
