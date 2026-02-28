@@ -1,0 +1,31 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for acr
+- name: Descargar imagen
+  containers.podman.podman_image:
+   name: docker.io/library/{{ image_name }}
+   tag: "{{ image_tag }}"
+   pull: yes
+  
+- name: Etiquetar imagen
+  command: podman tag docker.io/library/{{ image_name }}:{{ image_tag }} {{ acr_login_server }}/{{ image_name }}:{{ new_tag }}
+  
+- name: Obtener token ACR
+  command: az acr login -n {{ acr_name }} --expose-token
+  register: acr_token_raw
+
+- name: Extraer access token
+  set_fact:
+    acr_access_token: "{{ (acr_token_raw.stdout | from_json).accessToken }}"
+
+- name: Login en ACR usando podman_login
+  containers.podman.podman_login:
+    username: 00000000-0000-0000-0000-000000000000
+    password: "{{ acr_access_token }}"
+    registry: "{{ acr_login_server }}"
+
+- name: Subir imagen a ACR
+  containers.podman.podman_image:
+   name: "{{ acr_login_server }}/{{ image_name }}"
+   tag: "{{ new_tag }}"
+   push: yes

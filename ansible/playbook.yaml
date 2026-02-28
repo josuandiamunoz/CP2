@@ -1,7 +1,6 @@
 ---
 - name: Setup ACR and images
-hosts: localhost
-tasks:
-- name: Pull, build, tag and push images to ACR
-include_role:
-name: acr
+  hosts: localhost
+  roles:
+  - acr
+
