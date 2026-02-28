@@ -1,3 +1,8 @@
+resource "tls_private_key" "ssh_key" {
+  algorithm = "RSA"
+  rsa_bits  = 4096
+}
+
 resource "azurerm_linux_virtual_machine" "vm" {
   name                = "vm-terraform"
   resource_group_name = azurerm_resource_group.rg.name
@@ -10,7 +15,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
 
   admin_ssh_key {
     username   = var.admin_username
-    public_key = tls_private_key.example.public_key_openssh
+    public_key = tls_private_key.ssh_key.public_key_openssh
   }
 
   os_disk {
