@@ -1,8 +1,4 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # vars file for acr
-acr_name: acrcasopractico2
-acr_login_server: acrcasopractico2.azurecr.io
-image_name: nginx
-image_tag: latest
-new_tag: casopractico2
+
