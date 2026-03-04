@@ -1,0 +1,17 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for aks
+
+- name: Login en ACR usando podman_login
+  containers.podman.podman_login:
+    username: 00000000-0000-0000-0000-000000000000
+    password: "{{ acr_access_token }}"
+    registry: "{{ acr_login_server }}"
+    
+- name: Construir imagen
+  containers.podman.podman_image:
+    name: "{{ acr_login_server }}/{{ frontend_image_name }}"
+    tag: "{{ new_tag }}"
+    path: "roles/aks/files/frontend"
+    push: true
+    state: build

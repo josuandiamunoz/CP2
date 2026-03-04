@@ -3,4 +3,11 @@
   hosts: localhost
   roles:
   - acr
+  
+- name: Setup Webserver
+  hosts: webapp
+  vars:
+    acr_access_token: "{{ hostvars['localhost']['acr_access_token'] }}"
+  roles:
+  - vm
 
