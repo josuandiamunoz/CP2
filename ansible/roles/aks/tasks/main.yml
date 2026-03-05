@@ -79,3 +79,30 @@
           - protocol: TCP
             port: 80
             targetPort: 80
+
+- name: Desplegar el backend en el clúster de AKS
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: "{{ backend_image_name }}"
+        namespace: default
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: "{{ backend_image_name }}"
+        template:
+          metadata:
+            labels:
+              app: "{{ backend_image_name }}"
+          spec:
+            containers:
+            - name: "{{ backend_image_name }}"
+              # IMPORTANTE: Esta es la imagen que subiste en el paso anterior
+              image: "{{ acr_login_server }}/{{ backend_image_name }}:{{ new_tag }}"
+              ports:
+              - containerPort: 5000
+              imagePullPolicy: Always
