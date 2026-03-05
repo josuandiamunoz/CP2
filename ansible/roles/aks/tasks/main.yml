@@ -15,3 +15,59 @@
     path: "roles/aks/files/frontend"
     push: true
     state: build
+    
+- name: Obtener credenciales de AKS
+  ansible.builtin.command: az aks get-credentials --resource-group {{ resource_group }} --name {{ cluster_name }} --overwrite-existing
+  changed_when: false
+  
+- name: Desplegar frontend
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: "{{ frontend_image_name }}"
+        namespace: "default"
+      spec:
+        replicas: 1
+        selector:
+          matchLabels:
+            app: "{{ frontend_image_name }}"
+        template:
+          metadata:
+            labels:
+              app: "{{ frontend_image_name }}"
+          spec:
+            nodeSelector: 
+              kubernetes.io/os: linux
+            containers:
+              - name: "{{ frontend_image_name }}"
+                image: "{{ acr_login_server }}/{{ frontend_image_name }}:{{ new_tag }}"
+                ports:
+                  - containerPort: 80
+                resources:
+                  requests:
+                    cpu: "100m"
+                    memory: "128Mi"
+                  limits:
+                    cpu: "250m"
+                    memory: "256Mi"
+                    
+- name: Exponer frontend con Load Balancer
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: "{{ frontend_image_name }}-service"
+        namespace: "default"
+      spec:
+        type: LoadBalancer
+        selector:
+          app: "{{ frontend_image_name }}"
+        ports:
+          - protocol: TCP
+            port: 80
+            targetPort: 80

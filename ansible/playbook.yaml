@@ -10,4 +10,13 @@
     acr_access_token: "{{ hostvars['localhost']['acr_access_token'] }}"
   roles:
   - vm
+  
+- name: Setup AKS
+  hosts: localhost
+  vars:
+    acr_access_token: "{{ hostvars['localhost']['acr_access_token'] }}"
+  roles:
+  - aks
+  
+ 
 
