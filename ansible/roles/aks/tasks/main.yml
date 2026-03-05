@@ -22,7 +22,7 @@
   containers.podman.podman_image:
     name: "{{ acr_login_server }}/{{ backend_image_name }}"
     tag: "{{ new_tag }}"
-    path: "roles/aks/files/frontend"
+    path: "roles/aks/files/backend"
     push: true
     state: build
     
