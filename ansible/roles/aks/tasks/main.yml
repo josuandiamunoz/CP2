@@ -106,3 +106,21 @@
               ports:
               - containerPort: 5000
               imagePullPolicy: Always
+
+- name: Exponer backend para comunicación con frontend
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: backend-service
+        namespace: default
+      spec:
+        selector:
+          app: "{{ backend_image_name }}"
+        ports:
+          - protocol: TCP
+            port: 80        # El puerto que expondrá el servicio
+            targetPort: 5000 # El puerto donde escucha tu Python (Flask)
+        type: ClusterIP      # IP interna del clúster (el front lo verá como http://backend-service)
