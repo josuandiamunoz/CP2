@@ -15,6 +15,8 @@
     path: "roles/aks/files/frontend"
     push: true
     state: build
+    build:
+      nocache: true
 
 - name: Construir imagen backend
   containers.podman.podman_image:
@@ -54,6 +56,7 @@
                 image: "{{ acr_login_server }}/{{ frontend_image_name }}:{{ new_tag }}"
                 ports:
                   - containerPort: 80
+                imagePullPolicy: Always
                 resources:
                   requests:
                     cpu: "100m"
