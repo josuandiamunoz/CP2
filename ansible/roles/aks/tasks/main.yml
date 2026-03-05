@@ -8,9 +8,17 @@
     password: "{{ acr_access_token }}"
     registry: "{{ acr_login_server }}"
     
-- name: Construir imagen
+- name: Construir imagen frontend
   containers.podman.podman_image:
     name: "{{ acr_login_server }}/{{ frontend_image_name }}"
+    tag: "{{ new_tag }}"
+    path: "roles/aks/files/frontend"
+    push: true
+    state: build
+
+- name: Construir imagen backend
+  containers.podman.podman_image:
+    name: "{{ acr_login_server }}/{{ backend_image_name }}"
     tag: "{{ new_tag }}"
     path: "roles/aks/files/frontend"
     push: true
