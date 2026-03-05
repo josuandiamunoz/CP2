@@ -40,15 +40,36 @@
 
     <div class="container">
         <div class="contador" id="contador">0</div>
-        <button onclick="incrementarContador()">Incrementar</button>
+        <button id="btn-incrementar" onclick="incrementarContador()">Incrementar</button>
     </div>
 
     <script>
+        const URL_API = "http://backend-service/actualizar";
         let contador = 0;
 
-        function incrementarContador() {
-            contador++;
-            document.getElementById('contador').textContent = contador;
+        async function incrementarContador() {
+            const boton = document.getElementById('btn-incrementar');
+            const display = document.getElementById('contador');
+
+            try {
+                boton.disabled = true;
+                const respuesta = await fetch(URL_API, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ valor: 1 }) // Le decimos que sume 1
+                });
+                if (!respuesta.ok) throw new Error('Error en el servidor');
+                const datos = await respuesta.json();
+                display.textContent = datos.nuevo_total;
+
+            } catch (error) {
+                console.error("Error:", error);
+                alert("No se pudo conectar con el backend. ¿Has configurado la IP correcta?");
+            } finally {
+                boton.disabled = false;
+            }
         }
     </script>
 
