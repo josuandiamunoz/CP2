@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app) # Importante para que el navegador no bloquee la petición desde el frontend
+CORS(app) 
 
 contador_total = 0
 
