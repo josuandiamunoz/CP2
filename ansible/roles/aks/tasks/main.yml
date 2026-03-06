@@ -15,8 +15,6 @@
     path: "roles/aks/files/frontend"
     push: true
     state: build
-    build:
-      nocache: true
 
 - name: Construir imagen backend
   containers.podman.podman_image:
@@ -133,7 +131,7 @@
     chart_ref: ingress-nginx/ingress-nginx
     release_namespace: ingress-basic
     create_namespace: yes
-    chart_repo_url: https://kubernetes.github.io/ingress-nginx
+    state: present
     values:
       controller:
         service:
