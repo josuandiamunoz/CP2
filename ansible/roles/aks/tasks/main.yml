@@ -126,8 +126,22 @@
             port: 80       
             targetPort: 5000 
         type: ClusterIP  
+      
+- name: Instalar Ingress Controller
+  kubernetes.core.helm:
+    name: nginx-ingress
+    chart_ref: ingress-nginx/ingress-nginx
+    release_namespace: ingress-basic
+    create_namespace: yes
+    chart_repo_url: https://kubernetes.github.io/ingress-nginx
+    values:
+      controller:
+        service:
+          annotations:
+            # Anotación específica para que el Load Balancer de Azure funcione mejor
+            service.beta.kubernetes.io/azure-load-balancer-health-probe-request-path: "/healthz"
 
-- name: Crear ingress
+- name: Crear reglas de tráfico
   kubernetes.core.k8s:
     state: present
     definition:
