@@ -75,7 +75,7 @@
         name: "{{ frontend_image_name }}-service"
         namespace: "default"
       spec:
-        type: LoadBalancer
+        type: ClusterIP
         selector:
           app: "{{ frontend_image_name }}"
         ports:
@@ -104,7 +104,6 @@
           spec:
             containers:
             - name: "{{ backend_image_name }}"
-              # IMPORTANTE: Esta es la imagen que subiste en el paso anterior
               image: "{{ acr_login_server }}/{{ backend_image_name }}:{{ new_tag }}"
               ports:
               - containerPort: 5000
@@ -124,6 +123,34 @@
           app: "{{ backend_image_name }}"
         ports:
           - protocol: TCP
-            port: 80        # El puerto que expondrá el servicio
-            targetPort: 5000 # El puerto donde escucha tu Python (Flask)
-        type: ClusterIP      # IP interna del clúster (el front lo verá como http://backend-service)
+            port: 80       
+            targetPort: 5000 
+        type: ClusterIP  
+
+- name: Crear ingress
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: networking.k8s.io/v1
+      kind: Ingress
+      metadata:
+        name: contador-ingress
+      spec:
+        ingressClassName: nginx
+        rules:
+        - http:
+            paths:
+            - path: /
+              pathType: Prefix
+              backend:
+                service:
+                  name: "{{ frontend_image_name }}-service"
+                  port:
+                    number: 80
+            - path: /api
+              pathType: Prefix
+              backend:
+                service:
+                  name: "{{ frontend_image_name }}-service"
+                  port:
+                    number: 80
