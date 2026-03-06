@@ -80,6 +80,22 @@
           - protocol: TCP
             port: 80
             targetPort: 80
+    
+- name: Crear volumen de persistencia para el backend
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: backend-pvc
+        namespace: default
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
 
 - name: Desplegar el backend en el clúster de AKS
   kubernetes.core.k8s:
@@ -105,7 +121,14 @@
               image: "{{ acr_login_server }}/{{ backend_image_name }}:{{ new_tag }}"
               ports:
               - containerPort: 5000
+              volumeMounts:
+              - name: data-volume
+                mountPath: /data
               imagePullPolicy: Always
+            volumes:
+            - name: data-volume
+              persistentVolumeClaim:
+                claimName: backend-pvc
 
 - name: Exponer backend para comunicación con frontend
   kubernetes.core.k8s:
