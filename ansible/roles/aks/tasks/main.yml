@@ -135,6 +135,7 @@
       kind: Ingress
       metadata:
         name: contador-ingress
+        namespace: default
       spec:
         ingressClassName: nginx
         rules:
@@ -151,6 +152,6 @@
               pathType: Prefix
               backend:
                 service:
-                  name: "{{ frontend_image_name }}-service"
+                  name: "{{ backend_image_name }}-service"
                   port:
                     number: 80
