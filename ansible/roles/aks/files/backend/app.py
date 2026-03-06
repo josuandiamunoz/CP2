@@ -6,7 +6,7 @@ CORS(app)
 
 contador_total = 0
 
-@app.route('/actualizar', methods=['POST'])
+@app.route('/api/actualizar', methods=['POST'])
 def actualizar():
     global contador_total
     datos = request.json
