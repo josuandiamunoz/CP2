@@ -22,6 +22,11 @@ resource "azurerm_kubernetes_cluster" "aks" {
       service_cidr        = "172.16.0.0/16"
       dns_service_ip      = "172.16.0.10"
   }
+
+  tags = {
+    environment = "CP2"
+  }
+  
 }
 
 resource "azurerm_role_assignment" "acr_pull" {
